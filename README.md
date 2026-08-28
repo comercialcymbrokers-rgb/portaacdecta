@@ -180,10 +180,13 @@
 
   .thread{padding:14px 18px 10px;}
   .msg{
-    display:flex;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(14px);
+    display:flex;gap:10px;margin-bottom:6px;opacity:1;transform:none;
+  }
+  .msg.pending{
+    opacity:0;transform:translateY(14px);
     transition:opacity .5s ease, transform .5s ease;
   }
-  .msg.visible{opacity:1;transform:translateY(0);}
+  .msg.pending.visible{opacity:1;transform:translateY(0);}
   .msg.agent{justify-content:flex-start;}
   .msg.user{justify-content:flex-end;}
   .avatar{
@@ -511,7 +514,7 @@
       </div>
     </div>
 
-    <div class="msg agent" id="petsLastBubble">
+    <div class="msg agent pending" id="petsLastBubble">
       <div class="avatar pets">🐾</div>
       <div class="bubble-col">
         <div class="bubble">¡Recibido! 🎉 En cuanto llegue tu mensaje, uno de nosotros te escribe directamente. Nada de bots fríos: aquí somos personas cuidando personas (y mascotas).</div>
@@ -576,7 +579,7 @@
       </div>
     </div>
 
-    <div class="msg agent" id="autosLastBubble">
+    <div class="msg agent pending" id="autosLastBubble">
       <div class="avatar autos">🚗</div>
       <div class="bubble-col">
         <div class="bubble">¡Listo! 🎉 Un asesor revisa los datos de tu vehículo y te contacta con tu cotización personalizada.</div>
@@ -655,18 +658,6 @@
   });
 
   function initPortal(){
-    // ---- revelado progresivo de las burbujas ----
-    const messages = Array.from(document.querySelectorAll('.msg'));
-    const threadObserver = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          entry.target.classList.add('visible');
-          threadObserver.unobserve(entry.target);
-        }
-      });
-    }, {threshold:.2});
-    messages.forEach(m=>threadObserver.observe(m));
-
     // ---- número principal animado (mascotas) ----
     function animateValue(el, end, duration){
       const startTime = performance.now();
@@ -680,15 +671,7 @@
       requestAnimationFrame(step);
     }
     const heroStatPets = document.getElementById('heroStatPets');
-    const statObserver = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          animateValue(heroStatPets, 39200000, 1200);
-          statObserver.disconnect();
-        }
-      });
-    }, {threshold:.5});
-    statObserver.observe(heroStatPets);
+    animateValue(heroStatPets, 39200000, 1200);
 
     // ---- calculadora de mascotas ----
     let petCount = 1;
