@@ -180,13 +180,10 @@
 
   .thread{padding:14px 18px 10px;}
   .msg{
-    display:flex;gap:10px;margin-bottom:6px;opacity:1;transform:none;
+    display:flex;gap:10px;margin-bottom:6px;opacity:0;transform:translateY(14px);
+    transition:opacity .45s ease, transform .45s ease;
   }
-  .msg.pending{
-    opacity:0;transform:translateY(14px);
-    transition:opacity .5s ease, transform .5s ease;
-  }
-  .msg.pending.visible{opacity:1;transform:translateY(0);}
+  .msg.visible{opacity:1;transform:translateY(0);}
   .msg.agent{justify-content:flex-start;}
   .msg.user{justify-content:flex-end;}
   .avatar{
@@ -514,7 +511,7 @@
       </div>
     </div>
 
-    <div class="msg agent pending" id="petsLastBubble">
+    <div class="msg agent manual-reveal" id="petsLastBubble">
       <div class="avatar pets">🐾</div>
       <div class="bubble-col">
         <div class="bubble">¡Recibido! 🎉 En cuanto llegue tu mensaje, uno de nosotros te escribe directamente. Nada de bots fríos: aquí somos personas cuidando personas (y mascotas).</div>
@@ -579,7 +576,7 @@
       </div>
     </div>
 
-    <div class="msg agent pending" id="autosLastBubble">
+    <div class="msg agent manual-reveal" id="autosLastBubble">
       <div class="avatar autos">🚗</div>
       <div class="bubble-col">
         <div class="bubble">¡Listo! 🎉 Un asesor revisa los datos de tu vehículo y te contacta con tu cotización personalizada.</div>
@@ -658,6 +655,17 @@
   });
 
   function initPortal(){
+    // ---- animación de conversación: las burbujas aparecen en secuencia, ----
+    // ---- controlada por tiempo (no por scroll) para que nunca queden ocultas ----
+    function revealSequential(selector, startDelay, gap){
+      const msgs = Array.from(document.querySelectorAll(selector));
+      msgs.forEach((m, i)=>{
+        setTimeout(()=>{ m.classList.add('visible'); }, startDelay + i*gap);
+      });
+    }
+    revealSequential('#mascotas .msg:not(.manual-reveal)', 250, 320);
+    revealSequential('#autos .msg:not(.manual-reveal)', 250, 320);
+
     // ---- número principal animado (mascotas) ----
     function animateValue(el, end, duration){
       const startTime = performance.now();
