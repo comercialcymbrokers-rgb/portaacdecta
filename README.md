@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -523,10 +522,16 @@
                     document.getElementById('referralFields').classList.remove('hidden');
                 }
             } catch (error) {
-                // si el script no está conectado aún, o falla la conexión, no bloqueamos al usuario:
-                // simplemente dejamos la elección manual (asociado/familiar) como respaldo.
-                statusEl.classList.add('hidden');
+                // si falla la verificación (ej. bloqueo de CORS, sin conexión), no lo dejamos
+                // pasar como asociado por defecto: activamos el flujo de "familiar / referido"
+                // como respaldo seguro, e informamos al usuario en vez de quedarnos en silencio.
+                console.error("Error verificando cédula contra el padrón:", error);
                 cedulaVerificada = null;
+                statusEl.classList.remove('hidden', 'text-slate-400', 'text-green-600');
+                statusEl.classList.add('text-amber-600');
+                statusEl.textContent = "No pudimos verificarte automáticamente. Cuéntanos quién te invitó 👇";
+                document.getElementById('roleFamiliar').checked = true;
+                document.getElementById('referralFields').classList.remove('hidden');
             }
         }
         document.getElementById('gateCedula').addEventListener('blur', verificarCedula);
