@@ -1,4 +1,4 @@
-                    <html lang="es">
+            <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -492,7 +492,7 @@
         let cedulaVerificada = null; // true = encontrada, false = no encontrada, null = sin verificar aún
 
         // ---- verificación automática contra el padrón de asociados ----
-        async function verificarCedula() {
+        function verificarCedula() {
             const cedula = document.getElementById('gateCedula').value.trim();
             const statusEl = document.getElementById('cedulaStatus');
 
@@ -502,11 +502,32 @@
             statusEl.classList.add('text-slate-400');
             statusEl.textContent = "Verificando en la base de asociados...";
 
-            try {
-                const response = await fetch(APPS_SCRIPT_URL + "?cedula=" + encodeURIComponent(cedula));
-                const data = await response.json();
+            // ---- técnica JSONP: evita por completo los bloqueos de CORS ----
+            // (a diferencia de fetch(), una etiqueta <script> puede cargar contenido
+            // de otro dominio sin restricciones; el propio script ejecuta nuestra función).
+            const callbackName = "onVerificarCedula_" + Date.now();
+            let resuelto = false;
 
-                if (data.found) {
+            const limpiar = (scriptTag) => {
+                delete window[callbackName];
+                if (scriptTag && scriptTag.parentNode) scriptTag.parentNode.removeChild(scriptTag);
+            };
+
+            const manejarFallo = () => {
+                if (resuelto) return;
+                resuelto = true;
+                cedulaVerificada = null;
+                statusEl.classList.remove('hidden', 'text-slate-400', 'text-green-600');
+                statusEl.classList.add('text-amber-600');
+                statusEl.textContent = "No pudimos verificarte automáticamente. Cuéntanos quién te invitó 👇";
+                document.getElementById('roleFamiliar').checked = true;
+                document.getElementById('referralFields').classList.remove('hidden');
+            };
+
+            window[callbackName] = function (data) {
+                if (resuelto) return;
+                resuelto = true;
+                if (data && data.found) {
                     cedulaVerificada = true;
                     statusEl.classList.remove('text-slate-400', 'text-amber-600');
                     statusEl.classList.add('text-green-600');
@@ -521,18 +542,16 @@
                     document.getElementById('roleFamiliar').checked = true;
                     document.getElementById('referralFields').classList.remove('hidden');
                 }
-            } catch (error) {
-                // si falla la verificación (ej. bloqueo de CORS, sin conexión), no lo dejamos
-                // pasar como asociado por defecto: activamos el flujo de "familiar / referido"
-                // como respaldo seguro, e informamos al usuario en vez de quedarnos en silencio.
-                console.error("Error verificando cédula contra el padrón:", error);
-                cedulaVerificada = null;
-                statusEl.classList.remove('hidden', 'text-slate-400', 'text-green-600');
-                statusEl.classList.add('text-amber-600');
-                statusEl.textContent = "No pudimos verificarte automáticamente. Cuéntanos quién te invitó 👇";
-                document.getElementById('roleFamiliar').checked = true;
-                document.getElementById('referralFields').classList.remove('hidden');
-            }
+                limpiar(script);
+            };
+
+            const script = document.createElement('script');
+            script.src = APPS_SCRIPT_URL + "?cedula=" + encodeURIComponent(cedula) + "&callback=" + callbackName;
+            script.onerror = () => { manejarFallo(); limpiar(script); };
+            document.body.appendChild(script);
+
+            // si no responde en 8 segundos, lo tratamos como fallo (sin dejar la duda cargando para siempre)
+            setTimeout(() => { if (!resuelto) { manejarFallo(); limpiar(script); } }, 8000);
         }
         document.getElementById('gateCedula').addEventListener('blur', verificarCedula);
 
