@@ -485,8 +485,8 @@
         const WHATSAPP_NUMBER = "573219232002"; // código país + número, sin + ni espacios
         const AGENCY_EMAIL = "comercial.cymbrokers@gmail.com";
 
-        // pega aquí la URL de tu Google Apps Script cuando esté publicada (ver codigo-verificacion-asociados.gs)
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAhbe1sjhEViwRAeT0GGEBgYndI0YoHWpJ8zaXm50IuoA70gYcnyj8oU811yy3hFocAg/exec";
+        // CSV público de la hoja "Asociados" (Archivo → Compartir → Publicar en la Web → CSV)
+        const ASOCIADOS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8KyDmFrqJtpQI9xqX6ieGx8QneGBj6hye20Ixk_zoVL7RZRycShPQyA6_B98cyeB4e6Cqpi9j1c_Y/pub?gid=0&single=true&output=csv";
 
         let clienteTipo = "asociado"; // 'asociado' o 'familiar'
         let referenteNombre = "";
@@ -494,31 +494,69 @@
         let cedulaVerificada = null; // true = encontrada, false = no encontrada, null = sin verificar aún
         let referenteVerificado = null; // true = encontrada, false = no encontrada, null = sin verificar aún
 
-        // ---- función genérica: consulta una cédula contra el padrón vía JSONP (sin bloqueos de CORS) ----
+        function normalizarCedula(c) {
+            return (c || '').toString().trim().replace(/[.\s-]/g, '');
+        }
+
+        // parser sencillo de CSV que respeta comillas dobles (por si algún nombre trae comas)
+        function parseCSV(texto) {
+            const filas = [];
+            let fila = [];
+            let campo = '';
+            let entreComillas = false;
+            for (let i = 0; i < texto.length; i++) {
+                const c = texto[i];
+                if (entreComillas) {
+                    if (c === '"') {
+                        if (texto[i + 1] === '"') { campo += '"'; i++; }
+                        else { entreComillas = false; }
+                    } else { campo += c; }
+                } else {
+                    if (c === '"') { entreComillas = true; }
+                    else if (c === ',') { fila.push(campo); campo = ''; }
+                    else if (c === '\n' || c === '\r') {
+                        if (c === '\r' && texto[i + 1] === '\n') i++;
+                        fila.push(campo); campo = '';
+                        if (fila.length > 1 || fila[0] !== '') filas.push(fila);
+                        fila = [];
+                    } else { campo += c; }
+                }
+            }
+            if (campo !== '' || fila.length) { fila.push(campo); filas.push(fila); }
+            return filas;
+        }
+
+        let padronCache = null;
+        let padronCargando = null;
+
+        function cargarPadron() {
+            if (padronCache) return Promise.resolve(padronCache);
+            if (padronCargando) return padronCargando;
+            padronCargando = fetch(ASOCIADOS_CSV_URL)
+                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                .then(texto => {
+                    const filas = parseCSV(texto);
+                    const lista = filas.slice(1) // saltar encabezado (Cedula, Nombre)
+                        .filter(f => f[0])
+                        .map(f => ({ cedula: normalizarCedula(f[0]), nombre: (f[1] || '').trim() }));
+                    padronCache = lista;
+                    padronCargando = null;
+                    return lista;
+                })
+                .catch(err => { padronCargando = null; throw err; });
+            return padronCargando;
+        }
+
+        // ---- función genérica: consulta una cédula contra el padrón (CSV público, sin bloqueos de CORS) ----
         function consultarPadron(cedula, onResultado, onError) {
-            if (!APPS_SCRIPT_URL || !cedula) { onError(); return; }
-
-            const callbackName = "onConsultaPadron_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-            let resuelto = false;
-
-            const limpiar = () => {
-                delete window[callbackName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-            };
-
-            window[callbackName] = function (data) {
-                if (resuelto) return;
-                resuelto = true;
-                onResultado(data);
-                limpiar();
-            };
-
-            const script = document.createElement('script');
-            script.src = APPS_SCRIPT_URL + "?cedula=" + encodeURIComponent(cedula) + "&callback=" + callbackName;
-            script.onerror = () => { if (!resuelto) { resuelto = true; onError(); limpiar(); } };
-            document.body.appendChild(script);
-
-            setTimeout(() => { if (!resuelto) { resuelto = true; onError(); limpiar(); } }, 8000);
+            const cedulaNorm = normalizarCedula(cedula);
+            if (!cedulaNorm) { onError(); return; }
+            cargarPadron()
+                .then(lista => {
+                    const encontrado = lista.find(a => a.cedula === cedulaNorm);
+                    onResultado(encontrado ? { found: true, nombre: encontrado.nombre } : { found: false, nombre: '' });
+                })
+                .catch(() => { onError(); });
         }
 
         // ---- verificación de la cédula del propio visitante ----
@@ -898,3 +936,4 @@ ${detalle}`
     </script>
 </body>
 </html>
+                            
