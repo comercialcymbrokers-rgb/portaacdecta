@@ -1,4 +1,5 @@
-            <html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,6 +99,7 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Cédula del asociado</label>
                         <input type="text" id="gateRefCedula" class="w-full px-2 py-1.5 border rounded text-xs">
+                        <p id="refCedulaStatus" class="text-xs mt-1.5 hidden"></p>
                     </div>
                 </div>
                 <div class="flex items-start gap-2 bg-slate-50 rounded-lg p-3">
@@ -490,43 +492,48 @@
         let referenteNombre = "";
         let referenteCedula = "";
         let cedulaVerificada = null; // true = encontrada, false = no encontrada, null = sin verificar aún
+        let referenteVerificado = null; // true = encontrada, false = no encontrada, null = sin verificar aún
 
-        // ---- verificación automática contra el padrón de asociados ----
-        function verificarCedula() {
-            const cedula = document.getElementById('gateCedula').value.trim();
-            const statusEl = document.getElementById('cedulaStatus');
+        // ---- función genérica: consulta una cédula contra el padrón vía JSONP (sin bloqueos de CORS) ----
+        function consultarPadron(cedula, onResultado, onError) {
+            if (!APPS_SCRIPT_URL || !cedula) { onError(); return; }
 
-            if (!APPS_SCRIPT_URL || !cedula) return;
-
-            statusEl.classList.remove('hidden', 'text-green-600', 'text-amber-600');
-            statusEl.classList.add('text-slate-400');
-            statusEl.textContent = "Verificando en la base de asociados...";
-
-            // ---- técnica JSONP: evita por completo los bloqueos de CORS ----
-            // (a diferencia de fetch(), una etiqueta <script> puede cargar contenido
-            // de otro dominio sin restricciones; el propio script ejecuta nuestra función).
-            const callbackName = "onVerificarCedula_" + Date.now();
+            const callbackName = "onConsultaPadron_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
             let resuelto = false;
 
-            const limpiar = (scriptTag) => {
+            const limpiar = () => {
                 delete window[callbackName];
-                if (scriptTag && scriptTag.parentNode) scriptTag.parentNode.removeChild(scriptTag);
-            };
-
-            const manejarFallo = () => {
-                if (resuelto) return;
-                resuelto = true;
-                cedulaVerificada = null;
-                statusEl.classList.remove('hidden', 'text-slate-400', 'text-green-600');
-                statusEl.classList.add('text-amber-600');
-                statusEl.textContent = "No pudimos verificarte automáticamente. Cuéntanos quién te invitó 👇";
-                document.getElementById('roleFamiliar').checked = true;
-                document.getElementById('referralFields').classList.remove('hidden');
+                if (script.parentNode) script.parentNode.removeChild(script);
             };
 
             window[callbackName] = function (data) {
                 if (resuelto) return;
                 resuelto = true;
+                onResultado(data);
+                limpiar();
+            };
+
+            const script = document.createElement('script');
+            script.src = APPS_SCRIPT_URL + "?cedula=" + encodeURIComponent(cedula) + "&callback=" + callbackName;
+            script.onerror = () => { if (!resuelto) { resuelto = true; onError(); limpiar(); } };
+            document.body.appendChild(script);
+
+            setTimeout(() => { if (!resuelto) { resuelto = true; onError(); limpiar(); } }, 8000);
+        }
+
+        // ---- verificación de la cédula del propio visitante ----
+        function verificarCedula() {
+            const cedula = document.getElementById('gateCedula').value.trim().replace(/[.\s-]/g, '');
+            const statusEl = document.getElementById('cedulaStatus');
+            cedulaVerificada = null;
+
+            if (!cedula) { statusEl.classList.add('hidden'); return; }
+
+            statusEl.classList.remove('hidden', 'text-green-600', 'text-amber-600');
+            statusEl.classList.add('text-slate-400');
+            statusEl.textContent = "Verificando en la base de asociados...";
+
+            consultarPadron(cedula, function (data) {
                 if (data && data.found) {
                     cedulaVerificada = true;
                     statusEl.classList.remove('text-slate-400', 'text-amber-600');
@@ -542,18 +549,51 @@
                     document.getElementById('roleFamiliar').checked = true;
                     document.getElementById('referralFields').classList.remove('hidden');
                 }
-                limpiar(script);
-            };
-
-            const script = document.createElement('script');
-            script.src = APPS_SCRIPT_URL + "?cedula=" + encodeURIComponent(cedula) + "&callback=" + callbackName;
-            script.onerror = () => { manejarFallo(); limpiar(script); };
-            document.body.appendChild(script);
-
-            // si no responde en 8 segundos, lo tratamos como fallo (sin dejar la duda cargando para siempre)
-            setTimeout(() => { if (!resuelto) { manejarFallo(); limpiar(script); } }, 8000);
+            }, function () {
+                cedulaVerificada = null;
+                statusEl.classList.remove('text-slate-400', 'text-green-600');
+                statusEl.classList.add('text-amber-600');
+                statusEl.textContent = "No pudimos verificarte automáticamente. Cuéntanos quién te invitó 👇";
+                document.getElementById('roleFamiliar').checked = true;
+                document.getElementById('referralFields').classList.remove('hidden');
+            });
         }
         document.getElementById('gateCedula').addEventListener('blur', verificarCedula);
+        document.getElementById('gateCedula').addEventListener('input', () => { cedulaVerificada = null; });
+
+        // ---- verificación de la cédula del asociado que refiere (para el bloqueo real) ----
+        function verificarReferente() {
+            const cedula = document.getElementById('gateRefCedula').value.trim().replace(/[.\s-]/g, '');
+            const statusEl = document.getElementById('refCedulaStatus');
+            referenteVerificado = null;
+
+            if (!cedula) { statusEl.classList.add('hidden'); return; }
+
+            statusEl.classList.remove('hidden', 'text-green-600', 'text-amber-600');
+            statusEl.classList.add('text-slate-400');
+            statusEl.textContent = "Verificando...";
+
+            consultarPadron(cedula, function (data) {
+                if (data && data.found) {
+                    referenteVerificado = true;
+                    statusEl.classList.remove('text-slate-400', 'text-amber-600');
+                    statusEl.classList.add('text-green-600');
+                    statusEl.textContent = "✅ Asociado verificado" + (data.nombre ? " (" + data.nombre + ")" : "");
+                } else {
+                    referenteVerificado = false;
+                    statusEl.classList.remove('text-slate-400', 'text-green-600');
+                    statusEl.classList.add('text-amber-600');
+                    statusEl.textContent = "Esa cédula no pertenece a ningún asociado ACDECTA registrado.";
+                }
+            }, function () {
+                referenteVerificado = null;
+                statusEl.classList.remove('text-slate-400', 'text-green-600');
+                statusEl.classList.add('text-amber-600');
+                statusEl.textContent = "No pudimos verificar esta cédula. Intenta de nuevo.";
+            });
+        }
+        document.getElementById('gateRefCedula').addEventListener('blur', verificarReferente);
+        document.getElementById('gateRefCedula').addEventListener('input', () => { referenteVerificado = null; });
 
         // ---- mostrar/ocultar campos del asociado que refiere ----
         document.querySelectorAll('input[name="gateRole"]').forEach(radio => {
@@ -564,6 +604,8 @@
         });
 
         // ---- puerta de entrada: nombre, cédula, tipo de solicitante, autorización ----
+        // BLOQUEO REAL: solo se puede entrar si la propia cédula está verificada como asociado,
+        // o si se identifica y verifica a un asociado real que refiere a la persona.
         document.getElementById('gateForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const nombre = document.getElementById('gateNombre').value.trim();
@@ -575,9 +617,23 @@
             const errorEl = document.getElementById('gateError');
 
             if (!nombre || !cedula || !consent || (esFamiliar && (!refNombre || !refCedula))) {
+                errorEl.textContent = "Falta tu nombre, cédula o la autorización de datos para continuar. Si eres familiar, también el nombre y la cédula del asociado que te invitó.";
                 errorEl.classList.remove('hidden');
                 return;
             }
+
+            if (!esFamiliar && cedulaVerificada !== true) {
+                errorEl.textContent = "No pudimos confirmar que perteneces a la base de asociados ACDECTA. Si un asociado te invitó, marca 'Soy familiar de un asociado' e indícanos quién fue.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (esFamiliar && referenteVerificado !== true) {
+                errorEl.textContent = "No pudimos confirmar que la cédula del asociado que te invitó pertenezca a la base ACDECTA. Verifícala e intenta de nuevo.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
             errorEl.classList.add('hidden');
 
             clienteTipo = esFamiliar ? "familiar" : "asociado";
