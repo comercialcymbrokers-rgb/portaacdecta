@@ -111,7 +111,7 @@
                 </div>
                 <div class="flex items-start gap-2 bg-slate-50 rounded-lg p-3">
                     <input type="checkbox" id="gateConsent" required class="mt-1">
-                    <label for="gateConsent" class="text-xs text-slate-600">Autorizo a Continental &amp; Multiseguros Brokers en Seguros Ltda. a tratar mis datos personales, con el fin de contactarme y generar cotizaciones de las pólizas de interés.</label>
+                    <label for="gateConsent" class="text-xs text-slate-600">Autorizo a C&M Brokers &amp; Multiseguros Brokers en Seguros Ltda. a tratar mis datos personales, con el fin de contactarme y generar cotizaciones de las pólizas de interés.</label>
                 </div>
                 <p id="gateError" class="hidden text-xs text-red-600">Falta tu nombre, cédula o la autorización de datos para continuar. Si eres familiar, también el nombre y la cédula del asociado que te invitó.</p>
                 <button type="submit" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-lg text-sm shadow-md transition-all">
@@ -168,7 +168,7 @@
                     <span class="text-brandOrange">dale el cuidado que se merecen.</span>
                 </h1>
                 <p class="text-slate-300 text-base md:text-lg">
-                    <strong>Tu peludito te regala su amor incondicional todos los días</strong>. Devuélvele esa tranquilidad con el respaldo de CyM Brokers: atención médica integral, vacunas y protección ante imprevistos.
+                    <strong>Tu peludito te regala su amor incondicional todos los días</strong>. Devuélvele esa tranquilidad con el respaldo de las diferentes compañias que te ofrecemos en CyM: atención médica integral, vacunas y protección ante imprevistos.
                 </p>
 
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
@@ -176,7 +176,7 @@
                         <i class="fa-solid fa-paw text-brandOrange text-2xl mt-1"></i>
                         <div>
                             <h4 class="font-bold text-sm">Seguro de Mascotas</h4>
-                            <p class="text-xs text-slate-400">Protección médica completa en Plan Global</p>
+                            <p class="text-xs text-slate-400">Protección médica veterinaria completa en Plan Global</p>
                         </div>
                     </div>
                     <div class="flex items-start space-x-3">
@@ -240,7 +240,9 @@
                                 <label class="block text-xs font-bold text-slate-600 mb-1">Edad</label>
                                 <select id="formPetAge" class="w-full px-2 py-1.5 border rounded text-xs">
                                     <option value="3m-1a">3 meses a 1 año</option>
-                                    <option value="1a-8a">1 año a 8 años</option>
+                                    <option value="1a-8a">1 año a 3 años</option>
+                                    <option value="1a-8a">3 año a 6 años</option>
+                                    <option value="1a-8a">6 año a 9 años</option>
                                 </select>
                             </div>
                         </div>
@@ -346,7 +348,7 @@
                     <i class="fa-solid fa-calendar-check text-brandOrange text-3xl"></i>
                     <div>
                         <h4 class="font-bold text-sm">Edades de ingreso permitidas</h4>
-                        <p class="text-xs text-slate-300">Ingreso desde los <strong>3 meses hasta los 8 años cumplidos</strong>. Una vez vinculada, la cobertura se renueva sin límite de edad.</p>
+                        <p class="text-xs text-slate-300">Ingreso desde los <strong>3 meses hasta los 9 años cumplidos</strong>. Una vez vinculada, la cobertura se renueva sin límite de edad.</p>
                     </div>
                 </div>
                 <button onclick="scrollToFormFromChat()" class="bg-brandOrange hover:bg-amber-500 text-brandNavy font-extrabold px-5 py-2.5 rounded-xl text-xs whitespace-nowrap transition">
@@ -440,7 +442,7 @@
     <!-- WIDGET CHATBOT CON RESPALDO HÍBRIDO -->
     <div class="fixed bottom-5 right-5 z-50 flex items-end gap-2">
         <div id="chatCallout" class="hidden sm:block bg-white text-brandNavy text-xs font-bold px-4 py-3 rounded-2xl rounded-br-none shadow-xl border border-brandOrange/40 max-w-[190px] leading-snug relative animate-bounce-slow">
-            Aquí puedes solucionar tus dudas frente a los seguros
+            Aquí puedes solucionar las dudas que tengas frente a tu seguro
             <button onclick="event.stopPropagation(); document.getElementById('chatCallout').classList.add('hidden');" class="absolute -top-2 -right-2 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center text-[10px]">✕</button>
         </div>
         <button id="chatToggleBtn" onclick="toggleChatWindow()" class="bg-brandBlue hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-105 relative shrink-0">
@@ -468,7 +470,7 @@
 
             <div id="chatBody" class="p-4 bg-slate-50 flex-1 overflow-y-auto space-y-3 text-xs">
                 <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm max-w-[88%] text-slate-700 chat-bubble-appear">
-                    ¡Hola! 👋 Soy tu asistente del convenio <strong>ACDECTA & Continental</strong>. Escríbeme cualquier duda puntual sobre la póliza de autos o mascotas y con gusto te la resuelvo.
+                    ¡Hola! 👋 Soy tu asistente del convenio <strong>ACDECTA & C&M Brokers</strong>. Escríbeme cualquier duda puntual sobre la póliza de autos o mascotas y con gusto te la resuelvo.
                 </div>
             </div>
 
