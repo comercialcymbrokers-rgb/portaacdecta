@@ -39,6 +39,13 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-bounce-slow {
+            animation: bounceSlow 2.4s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 relative">
@@ -431,8 +438,12 @@
     </footer>
 
     <!-- WIDGET CHATBOT CON RESPALDO HÍBRIDO -->
-    <div class="fixed bottom-5 right-5 z-50">
-        <button id="chatToggleBtn" onclick="toggleChatWindow()" class="bg-brandBlue hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-105 relative">
+    <div class="fixed bottom-5 right-5 z-50 flex items-end gap-2">
+        <div id="chatCallout" class="hidden sm:block bg-white text-brandNavy text-xs font-bold px-4 py-3 rounded-2xl rounded-br-none shadow-xl border border-brandOrange/40 max-w-[190px] leading-snug relative animate-bounce-slow">
+            Aquí puedes solucionar tus dudas frente a los seguros
+            <button onclick="event.stopPropagation(); document.getElementById('chatCallout').classList.add('hidden');" class="absolute -top-2 -right-2 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center text-[10px]">✕</button>
+        </div>
+        <button id="chatToggleBtn" onclick="toggleChatWindow()" class="bg-brandBlue hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-105 relative shrink-0">
             <i class="fa-solid fa-comments text-2xl"></i>
             <span class="absolute -top-1 -right-1 bg-brandOrange text-brandNavy font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white animate-pulse">?</span>
         </button>
@@ -462,6 +473,7 @@
             </div>
 
             <div id="chatOptions" class="px-3 py-2 bg-slate-100 border-t border-slate-200 flex gap-1.5 overflow-x-auto whitespace-nowrap text-[11px] shrink-0 no-scrollbar">
+                <button onclick="hablarConAsesor()" class="px-2.5 py-1 bg-brandOrange text-brandNavy font-bold rounded-full hover:bg-amber-500 transition shrink-0">🙋 Hablar con un asesor</button>
                 <button onclick="sendOption('exequial', '¿Qué cubre la cobertura exequial?')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">⚰️ Exequiales Mascotas</button>
                 <button onclick="sendOption('edad_mascotas', 'Edades permitidas para mascotas')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">🐱 Edades Mascotas</button>
                 <button onclick="sendOption('pago_nomina', 'Formas de pago por nómina')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">💳 Pago por Nómina</button>
@@ -747,6 +759,13 @@ ${detalle}`
 
         function toggleChatWindow() {
             document.getElementById('chatWindow').classList.toggle('hidden');
+            const callout = document.getElementById('chatCallout');
+            if (callout) callout.classList.add('hidden');
+        }
+
+        function hablarConAsesor() {
+            const mensaje = "Hola, soy asociado de ACDECTA y tengo una duda que el asistente del chat no me resolvió del todo. ¿Me pueden ayudar?";
+            window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(mensaje), "_blank");
         }
 
         function sendOption(key, userText) {
@@ -808,10 +827,14 @@ ${detalle}`
             const botBubble = document.createElement('div');
             botBubble.className = 'bg-white p-3 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm max-w-[88%] text-slate-700 chat-bubble-appear space-y-2';
             botBubble.innerHTML = htmlContent + `
-                <div class="pt-1 border-t border-slate-100 mt-2">
+                <div class="pt-1 border-t border-slate-100 mt-2 flex flex-col gap-1">
                     <button onclick="scrollToFormFromChat()" class="text-brandBlue font-bold underline text-[11px] inline-flex items-center gap-1 hover:text-blue-800">
                         <span>Ir al formulario de solicitud</span>
                         <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                    <button onclick="hablarConAsesor()" class="text-emerald-700 font-bold underline text-[11px] inline-flex items-center gap-1 hover:text-emerald-900">
+                        <span>¿No era esto? Escríbenos por WhatsApp</span>
+                        <i class="fa-brands fa-whatsapp"></i>
                     </button>
                 </div>`;
             chatBody.appendChild(botBubble);
@@ -918,8 +941,8 @@ ${detalle}`
                 return "Para brindarte el valor exacto con la tarifa especial de convenio, solo déjanos tus datos en el formulario de la página y te enviaremos la cotización de inmediato.";
             }
 
-            // 15. SALUDOS
-            else if (cleanText.includes("hola") || cleanText.includes("buenas") || cleanText.includes("saludos") || cleanText.includes("buenos dias")) {
+            // 15. SALUDOS (solo si el mensaje ES el saludo, no cuando acompaña una pregunta real)
+            else if (cleanText.trim().length <= 20 && (cleanText.includes("hola") || cleanText.includes("buenas") || cleanText.includes("saludos") || cleanText.includes("buenos dias"))) {
                 return "¡Hola! 👋 ¿En qué imprevisto o duda sobre la protección de tu mascota o vehículo te puedo orientar hoy?";
             }
 
