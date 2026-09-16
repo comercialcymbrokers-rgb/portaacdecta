@@ -111,7 +111,7 @@
                 </div>
                 <div class="flex items-start gap-2 bg-slate-50 rounded-lg p-3">
                     <input type="checkbox" id="gateConsent" required class="mt-1">
-                    <label for="gateConsent" class="text-xs text-slate-600">Autorizo a C&M Brokers &amp; Multiseguros Brokers en Seguros Ltda. a tratar mis datos personales, con el fin de contactarme y generar cotizaciones de las pólizas de interés.</label>
+                    <label for="gateConsent" class="text-xs text-slate-600">Autorizo a Continental &amp; Multiseguros Brokers en Seguros Ltda. a tratar mis datos personales, con el fin de contactarme y generar cotizaciones de las pólizas de interés.</label>
                 </div>
                 <p id="gateError" class="hidden text-xs text-red-600">Falta tu nombre, cédula o la autorización de datos para continuar. Si eres familiar, también el nombre y la cédula del asociado que te invitó.</p>
                 <button type="submit" class="w-full bg-brandBlue hover:bg-blue-800 text-white font-bold py-3 rounded-lg text-sm shadow-md transition-all">
@@ -168,7 +168,7 @@
                     <span class="text-brandOrange">dale el cuidado que se merecen.</span>
                 </h1>
                 <p class="text-slate-300 text-base md:text-lg">
-                    <strong>Tu peludito te regala su amor incondicional todos los días</strong>. Devuélvele esa tranquilidad con el respaldo de las diferentes compañias que te ofrecemos en CyM: atención médica integral, vacunas y protección ante imprevistos.
+                    <strong>Tu peludito te regala su amor incondicional todos los días</strong>. Devuélvele esa tranquilidad con el respaldo de las compañias que te brindamos en CyM Brokers: atención médica integral, vacunas y protección ante imprevistos.
                 </p>
 
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
@@ -241,8 +241,8 @@
                                 <select id="formPetAge" class="w-full px-2 py-1.5 border rounded text-xs">
                                     <option value="3m-1a">3 meses a 1 año</option>
                                     <option value="1a-8a">1 año a 3 años</option>
-                                    <option value="1a-8a">3 año a 6 años</option>
-                                    <option value="1a-8a">6 año a 9 años</option>
+                                     <option value="1a-8a">3 año a 6 años</option>
+                                     <option value="1a-8a">6 año a 9 años</option>
                                 </select>
                             </div>
                         </div>
@@ -442,7 +442,7 @@
     <!-- WIDGET CHATBOT CON RESPALDO HÍBRIDO -->
     <div class="fixed bottom-5 right-5 z-50 flex items-end gap-2">
         <div id="chatCallout" class="hidden sm:block bg-white text-brandNavy text-xs font-bold px-4 py-3 rounded-2xl rounded-br-none shadow-xl border border-brandOrange/40 max-w-[190px] leading-snug relative animate-bounce-slow">
-            Aquí puedes solucionar las dudas que tengas frente a tu seguro
+            Aquí puedes solucionar tus dudas frente a tu seguro
             <button onclick="event.stopPropagation(); document.getElementById('chatCallout').classList.add('hidden');" class="absolute -top-2 -right-2 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-full w-5 h-5 flex items-center justify-center text-[10px]">✕</button>
         </div>
         <button id="chatToggleBtn" onclick="toggleChatWindow()" class="bg-brandBlue hover:bg-blue-800 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-all transform hover:scale-105 relative shrink-0">
@@ -874,7 +874,7 @@ ${detalle}`
             const cleanText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             // 1. INGESTIÓN / INTOXICACIÓN / JUGUETES
-            if (cleanText.includes("trago") || cleanText.includes("comio") || cleanText.includes("intoxic") || cleanText.includes("veneno") || cleanText.includes("juguete") || cleanText.includes("hueso") || cleanText.includes("cuerpo extrano") || cleanText.includes("tomo algo")) {
+            if (cleanText.includes("se trago") || cleanText.includes("se lo trago") || cleanText.includes("comio") || cleanText.includes("intoxic") || cleanText.includes("veneno") || cleanText.includes("juguete") || cleanText.includes("hueso") || cleanText.includes("cuerpo extrano") || cleanText.includes("tomo algo")) {
                 return "<strong>¡Sí, es una urgencia médica cubierta!</strong> 🩺<br><br>Si tu mascota se traga un objeto, se intoxica o come algo peligroso, el seguro cubre la atención de emergencia, lavado, ecografías/radiografías y la cirugía de extracción si llega a necesitarla.";
             }
 
@@ -923,14 +923,64 @@ ${detalle}`
                 return "Puedes afiliarlo si tiene entre <strong>3 meses y 8 años de edad</strong>. Lo mejor es que una vez adentro, el seguro se renueva de por vida sin límite de edad.";
             }
 
-            // 11. IMPREVISTOS EN AUTO: Varada, Llaves adentro, Batería, Llanta
-            else if (cleanText.includes("llave") || cleanText.includes("bateria") || cleanText.includes("pinch") || cleanText.includes("llanta") || cleanText.includes("varado") || cleanText.includes("gasolina") || cleanText.includes("corriente")) {
-                return "<strong>¡Tienes Asistencia Express 24/7!</strong> 🚗<br><br>Si te quedas sin batería, se te picha una llanta, dejas las llaves adentro o te quedas sin gasolina, te enviamos carro taller o cerrajero de inmediato.";
+            // 11. VARADA EN VÍA: llanta pinchada, batería, sin gasolina (taller móvil)
+            else if (cleanText.includes("pinch") || cleanText.includes("bateria") || cleanText.includes("sin gasolina") || cleanText.includes("me quede sin gasolina") || cleanText.includes("varado") || cleanText.includes("varada") || cleanText.includes("me vare")) {
+                return "<strong>¡Te enviamos un taller móvil!</strong> 🔧<br><br>Si te varas por una llanta pinchada, batería descargada o te quedas sin gasolina, SURA te envía un taller móvil <strong>sin límite de veces</strong>. Los repuestos o la mano de obra adicional corren por tu cuenta, pero el envío del servicio no tiene costo.";
             }
 
-            // 12. IMPREVISTOS EN AUTO: Choques, Grúa, Conductor Elegido
-            else if (cleanText.includes("choque") || cleanText.includes("grua") || cleanText.includes("conductor") || cleanText.includes("tomar") || cleanText.includes("fiesta") || cleanText.includes("chocaron") || cleanText.includes("robo")) {
-                return "<strong>¡Viajas respaldado en todo momento!</strong> 🛡️<br><br>Cubre la grúa nacional, choques, robo del vehículo, pérdidas totales/parciales y te brinda conductor elegido para tus reuniones o eventos.";
+            // 12. LLAVES PERDIDAS / CERRAJERO
+            else if (cleanText.includes("llave") || cleanText.includes("cerrajero") || cleanText.includes("quede encerrado")) {
+                return "Si se te pierden las llaves o quedan adentro del carro, SURA te envía un <strong>cerrajero</strong>. Los costos de mano de obra adicionales corren por tu cuenta, pero el envío del servicio está incluido.";
+            }
+
+            // 13. GRÚA
+            else if (cleanText.includes("grua")) {
+                return "SURA te lleva en grúa: si tienes el <strong>Plan Autos Global</strong>, hasta la ciudad de destino de tu viaje o la ciudad de circulación del carro. Con los otros planes, hasta la ciudad más cercana donde puedan repararlo.";
+            }
+
+            // 14. CHOQUES PEQUEÑOS / RAYONES / VIDRIOS (sin deducible en accesorios y llantas)
+            else if (cleanText.includes("rayon") || cleanText.includes("rayaron") || cleanText.includes("me rayaron") || cleanText.includes("golpecito") || cleanText.includes("parachoques") || cleanText.includes("bomper") || cleanText.includes("se estrello un vidrio") || cleanText.includes("llanta estallada") || cleanText.includes("llanta reventada")) {
+                return "Para choques y daños pequeños (bómper, capó, guardafangos, rayones leves, vidrios, llantas estalladas), SURA garantiza la sustitución o reparación de la pieza. <strong>Los pequeños accesorios y las llantas estalladas no tienen deducible</strong> — puedes reclamar sin que te afecte la póliza.";
+            }
+
+            // 15. PÉRDIDA TOTAL / ROBO DEL CARRO
+            else if (cleanText.includes("perdida total") || cleanText.includes("me robaron el carro") || cleanText.includes("hurto") || cleanText.includes("robaron mi carro") || cleanText.includes("se lo robaron")) {
+                return "Si tu carro queda en <strong>pérdida total o te lo roban</strong>, SURA te da un anticipo (hasta 90% con el Plan Global, o hasta 70% con Clásico/Básico) para que cambies de carro o pagues tu crédito, además de gastos de desplazamiento y firma de documentos a domicilio. Aplica en Bogotá, Cali y Medellín.";
+            }
+
+            // 16. CONDUCTOR ELEGIDO / TOMÉ LICOR
+            else if (cleanText.includes("conductor elegido") || cleanText.includes("tome licor") || cleanText.includes("tome trago") || cleanText.includes("no puedo manejar") || cleanText.includes("estoy tomado")) {
+                return "Si tomaste licor, SURA te presta el <strong>servicio de conductor elegido</strong> para llevarte a ti y a tu carro a casa (Plan Global: 12 veces por vigencia, Plan Clásico: 6 veces). También puedes usarlo para otros trayectos que no puedas manejar, con un costo de $15.000 por trayecto.";
+            }
+
+            // 17. MI MASCOTA EN UN ACCIDENTE DE AUTO
+            else if ((cleanText.includes("mascota") || cleanText.includes("perro") || cleanText.includes("gato")) && (cleanText.includes("carro") || cleanText.includes("accidente de transito") || cleanText.includes("choque"))) {
+                return "Si tu mascota (perro o gato) se lesiona o muere en un accidente de tránsito <strong>dentro del carro asegurado</strong>, SURA cubre hasta el 10% del valor asegurado por ocupante, incluyendo el reembolso de gastos veterinarios si la atienden en una clínica habilitada.";
+            }
+
+            // 18. PASAJEROS O CONDUCTOR LESIONADO/FALLECIDO EN ACCIDENTE
+            else if (cleanText.includes("pasajero") || cleanText.includes("murio en el accidente") || cleanText.includes("quedo discapacitado") || cleanText.includes("perdio una parte del cuerpo")) {
+                return "Si en un accidente del carro asegurado un pasajero o el conductor muere, queda con discapacidad permanente o pierde una parte del cuerpo, SURA paga hasta el valor contratado por cada persona (con límite según el número de pasajeros permitido en la matrícula).";
+            }
+
+            // 19. PROTECCIÓN PATRIMONIAL / DAÑOS A TERCEROS EN CHOQUE
+            else if (cleanText.includes("le pegue a otro carro") || cleanText.includes("choque y fue mi culpa") || cleanText.includes("tuve la culpa") || cleanText.includes("fue mi culpa") || cleanText.includes("responsabilidad fue mia") || cleanText.includes("demanda por accidente")) {
+                return "Si chocas y la responsabilidad es tuya (o compartida), SURA te acompaña con un abogado en el sitio, paga los daños al tercero afectado sin que tengas que responder con tus bienes, y busca conciliar en el momento para evitarte trámites legales.";
+            }
+
+            // 20. MANTENIMIENTO / CENTRO DE SERVICIOS SURA
+            else if (cleanText.includes("mantenimiento") || cleanText.includes("revision preventiva") || cleanText.includes("centro de servicio") || cleanText.includes("peritaje") || cleanText.includes("comprar carro usado") || cleanText.includes("vender mi carro")) {
+                return "En los Centros de Servicios SURA tienes revisión preventiva y asesoría de mecánico <strong>sin costo</strong> (ilimitada con Plan Global, 2 veces con los demás planes), mantenimiento por kilometraje con recogida y entrega gratis en zona urbana, y peritaje si vas a comprar o vender tu carro usado.";
+            }
+
+            // 21. PARQUEADERO / PATIO DE TRÁNSITO
+            else if (cleanText.includes("parqueadero") || cleanText.includes("patio") || cleanText.includes("inmovilizaron el carro")) {
+                return "Si tu carro es trasladado a un patio por la autoridad de tránsito, SURA te reembolsa los gastos de parqueadero: hasta 15 días calendario con el Plan Global, o hasta 10 días con el Plan Básico Pérdidas Totales, con un tope de un salario mínimo diario por día de estacionamiento.";
+            }
+
+            // 22. EMERGENCIA GRAVE (situación insegura, niños, embarazo, mascotas)
+            else if (cleanText.includes("situacion dificil") || cleanText.includes("lugar inseguro") || cleanText.includes("estoy en peligro") || cleanText.includes("necesito ayuda urgente")) {
+                return "Para emergencias donde te sientas en riesgo (lugar inseguro, con niños, adultos mayores, embarazo o mascotas), llama a la línea <strong>#888</strong> desde tu celular o escribe al WhatsApp de SURA <strong>315 275 7888</strong>. Activan de inmediato una red de apoyo con bomberos, policía o ambulancia según el caso.";
             }
 
             // 13. PAGO POR NÓMINA ACDECTA
@@ -961,4 +1011,3 @@ ${detalle}`
     </script>
 </body>
 </html>
-
