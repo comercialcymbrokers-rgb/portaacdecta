@@ -240,9 +240,9 @@
                                 <label class="block text-xs font-bold text-slate-600 mb-1">Edad</label>
                                 <select id="formPetAge" class="w-full px-2 py-1.5 border rounded text-xs">
                                     <option value="3m-1a">3 meses a 1 año</option>
-                                    <option value="1a-8a">1 año a 3 años</option>
-                                     <option value="1a-8a">3 año a 6 años</option>
-                                     <option value="1a-8a">6 año a 9 años</option>
+                                    <option value="1a-3a">1 año a 3 años</option>
+                                     <option value="3a-6a">3 año a 6 años</option>
+                                     <option value="6a-9a">6 año a 9 años</option>
                                 </select>
                             </div>
                         </div>
@@ -474,12 +474,26 @@
                 </div>
             </div>
 
-            <div id="chatOptions" class="px-3 py-2 bg-slate-100 border-t border-slate-200 flex gap-1.5 overflow-x-auto whitespace-nowrap text-[11px] shrink-0 no-scrollbar">
-                <button onclick="hablarConAsesor()" class="px-2.5 py-1 bg-brandOrange text-brandNavy font-bold rounded-full hover:bg-amber-500 transition shrink-0">🙋 Hablar con un asesor</button>
-                <button onclick="sendOption('exequial', '¿Qué cubre la cobertura exequial?')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">⚰️ Exequiales Mascotas</button>
-                <button onclick="sendOption('edad_mascotas', 'Edades permitidas para mascotas')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">🐱 Edades Mascotas</button>
-                <button onclick="sendOption('pago_nomina', 'Formas de pago por nómina')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">💳 Pago por Nómina</button>
-                <button onclick="sendOption('cobertura_auto', 'Coberturas de Autos')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">🚗 Seguro de Auto</button>
+            <div class="relative bg-slate-100 border-t border-slate-200 shrink-0">
+                <button id="chatOptionsLeftArrow" onclick="scrollChatOptions(-1)" aria-label="Ver opciones anteriores" class="hidden absolute left-0 top-0 bottom-0 z-10 w-7 flex items-center justify-center bg-gradient-to-r from-slate-100 via-slate-100/90 to-transparent">
+                    <span class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow flex items-center justify-center text-brandNavy text-[10px]">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </span>
+                </button>
+
+                <div id="chatOptions" class="px-3 py-2 flex gap-1.5 overflow-x-auto whitespace-nowrap text-[11px] no-scrollbar">
+                    <button onclick="hablarConAsesor()" class="px-2.5 py-1 bg-brandOrange text-brandNavy font-bold rounded-full hover:bg-amber-500 transition shrink-0">🙋 Hablar con un asesor</button>
+                    <button onclick="sendOption('exequial', '¿Qué cubre la cobertura exequial?')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">⚰️ Exequiales Mascotas</button>
+                    <button onclick="sendOption('edad_mascotas', 'Edades permitidas para mascotas')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">🐱 Edades Mascotas</button>
+                    <button onclick="sendOption('pago_nomina', 'Formas de pago por nómina')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">💳 Pago por Nómina</button>
+                    <button onclick="sendOption('cobertura_auto', 'Coberturas de Autos')" class="px-2.5 py-1 bg-white border border-slate-300 rounded-full hover:bg-brandBlue hover:text-white transition">🚗 Seguro de Auto</button>
+                </div>
+
+                <button id="chatOptionsRightArrow" onclick="scrollChatOptions(1)" aria-label="Ver más opciones" class="absolute right-0 top-0 bottom-0 z-10 w-7 flex items-center justify-center bg-gradient-to-l from-slate-100 via-slate-100/90 to-transparent">
+                    <span class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow flex items-center justify-center text-brandNavy text-[10px] animate-pulse">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </span>
+                </button>
             </div>
 
             <form onsubmit="event.preventDefault(); sendCustomMessage();" class="p-2.5 bg-white border-t border-slate-200 flex items-center space-x-2 shrink-0">
@@ -763,7 +777,32 @@ ${detalle}`
             document.getElementById('chatWindow').classList.toggle('hidden');
             const callout = document.getElementById('chatCallout');
             if (callout) callout.classList.add('hidden');
+            updateChatOptionsArrows();
         }
+
+        // ---- flechas para desplazar las opciones rápidas del chat, sin alterar su diseño ----
+        function scrollChatOptions(direccion) {
+            const el = document.getElementById('chatOptions');
+            if (el) el.scrollBy({ left: direccion * 140, behavior: 'smooth' });
+        }
+
+        function updateChatOptionsArrows() {
+            const el = document.getElementById('chatOptions');
+            const izq = document.getElementById('chatOptionsLeftArrow');
+            const der = document.getElementById('chatOptionsRightArrow');
+            if (!el || !izq || !der) return;
+            const haySobranteIzq = el.scrollLeft > 4;
+            const haySobranteDer = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+            izq.classList.toggle('hidden', !haySobranteIzq);
+            der.classList.toggle('hidden', !haySobranteDer);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const el = document.getElementById('chatOptions');
+            if (el) el.addEventListener('scroll', updateChatOptionsArrows);
+            window.addEventListener('resize', updateChatOptionsArrows);
+            setTimeout(updateChatOptionsArrows, 300);
+        });
 
         function hablarConAsesor() {
             const mensaje = "Hola, soy asociado de ACDECTA y tengo una duda que el asistente del chat no me resolvió del todo. ¿Me pueden ayudar?";
@@ -920,7 +959,7 @@ ${detalle}`
 
             // 10. EDADES Y LÍMITES
             else if (cleanText.includes("edad") || cleanText.includes("anos") || cleanText.includes("meses") || cleanText.includes("viejo") || cleanText.includes("cachorro") || cleanText.includes("hasta que")) {
-                return "Puedes afiliarlo si tiene entre <strong>3 meses y 8 años de edad</strong>. Lo mejor es que una vez adentro, el seguro se renueva de por vida sin límite de edad.";
+                return "Puedes afiliarlo si tiene entre <strong>3 meses y 9 años de edad</strong>. Lo mejor es que una vez adentro, el seguro se renueva de por vida sin límite de edad.";
             }
 
             // 11. VARADA EN VÍA: llanta pinchada, batería, sin gasolina (taller móvil)
