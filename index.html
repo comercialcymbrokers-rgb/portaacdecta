@@ -811,12 +811,20 @@ ${detalle}`
             window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(mensaje), "_blank");
         }
 
+        // Respuestas garantizadas para los botones de acceso rápido (no dependen de coincidencia de palabras clave)
+        const QUICK_OPTION_RESPONSES = {
+            exequial: "En estos momentos difíciles cuentas con nuestro apoyo. La cobertura exequial asume el costo de la <strong>cremación</strong> y el procedimiento médico de eutanasia por salud.",
+            edad_mascotas: "Puedes afiliarlo si tiene entre <strong>3 meses y 9 años de edad</strong>. Lo mejor es que una vez adentro, el seguro se renueva de por vida sin límite de edad.",
+            pago_nomina: "¡Sin complicaciones de pago! Como asociado de <strong>ACDECTA</strong>, la cuota se descuenta automáticamente de tu nómina para que disfrutes de tu seguro sin trámites mensuales.",
+            cobertura_auto: "<strong>El Seguro de Autos con SURA te acompaña en todo momento</strong> 🚗<br><br>Cubre daños a tu vehículo por choques y accidentes, pérdida total o robo, responsabilidad civil ante terceros, y asistencia en vía las 24 horas (grúa, taller móvil, cerrajero, conductor elegido si tomaste licor). También protege a los pasajeros y hasta a tu mascota si va contigo en el carro.<br><br>Cuéntame algo puntual (por ejemplo \"se me pinchó una llanta\" o \"me chocaron\") y te doy el detalle exacto, o si prefieres, déjanos tus datos en el formulario para la cotización."
+        };
+
         function sendOption(key, userText) {
             appendUserBubble(userText);
             const loadingId = appendLoadingBubble();
             setTimeout(() => {
                 removeLoadingBubble(loadingId);
-                const botResponse = generateFallbackResponse(userText);
+                const botResponse = QUICK_OPTION_RESPONSES[key] || generateFallbackResponse(userText);
                 appendBotBubble(botResponse);
             }, 400);
         }
