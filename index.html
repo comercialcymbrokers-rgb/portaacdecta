@@ -816,7 +816,7 @@ ${detalle}`
             exequial: "En estos momentos difíciles cuentas con nuestro apoyo. La cobertura exequial asume el costo de la <strong>cremación</strong> y el procedimiento médico de eutanasia por salud.",
             edad_mascotas: "Puedes afiliarlo si tiene entre <strong>3 meses y 9 años de edad</strong>. Lo mejor es que una vez adentro, el seguro se renueva de por vida sin límite de edad.",
             pago_nomina: "¡Sin complicaciones de pago! Como asociado de <strong>ACDECTA</strong>, la cuota se descuenta automáticamente de tu nómina para que disfrutes de tu seguro sin trámites mensuales.",
-            cobertura_auto: "<strong>El Seguro de Autos con SURA te acompaña en todo momento</strong> 🚗<br><br>Cubre daños a tu vehículo por choques y accidentes, pérdida total o robo, responsabilidad civil ante terceros, y asistencia en vía las 24 horas (grúa, taller móvil, cerrajero, conductor elegido si tomaste licor). También protege a los pasajeros y hasta a tu mascota si va contigo en el carro.<br><br>Cuéntame algo puntual (por ejemplo \"se me pinchó una llanta\" o \"me chocaron\") y te doy el detalle exacto, o si prefieres, déjanos tus datos en el formulario para la cotización."
+            cobertura_auto: "<strong>El Seguro de Autos te acompaña en todo momento</strong> 🚗<br><br>Cubre daños a tu vehículo por choques y accidentes, pérdida total o robo, responsabilidad civil ante terceros, y asistencia en vía las 24 horas (grúa, taller móvil, cerrajero, conductor elegido si tomaste licor). También protege a los pasajeros y hasta a tu mascota si va contigo en el carro.<br><br>Cuéntame algo puntual (por ejemplo \"se me pinchó una llanta\" o \"me chocaron\") y te doy el detalle exacto, o si prefieres, déjanos tus datos en el formulario para la cotización."
         };
 
         function sendOption(key, userText) {
@@ -974,62 +974,62 @@ ${detalle}`
 
             // 11. VARADA EN VÍA: llanta pinchada, batería, sin gasolina (taller móvil)
             else if (cleanText.includes("pinch") || cleanText.includes("bateria") || cleanText.includes("sin gasolina") || cleanText.includes("me quede sin gasolina") || cleanText.includes("varado") || cleanText.includes("varada") || cleanText.includes("me vare")) {
-                return "<strong>¡Te enviamos un taller móvil!</strong> 🔧<br><br>Si te varas por una llanta pinchada, batería descargada o te quedas sin gasolina, SURA te envía un taller móvil <strong>sin límite de veces</strong>. Los repuestos o la mano de obra adicional corren por tu cuenta, pero el envío del servicio no tiene costo.";
+                return "<strong>¡Te enviamos un taller móvil!</strong> 🔧<br><br>Si te varas por una llanta pinchada, batería descargada o te quedas sin gasolina, te enviamos un taller móvil <strong>sin límite de veces</strong>. Los repuestos o la mano de obra adicional corren por tu cuenta, pero el envío del servicio no tiene costo.";
             }
 
             // 12. LLAVES PERDIDAS / CERRAJERO
             else if (cleanText.includes("llave") || cleanText.includes("cerrajero") || cleanText.includes("quede encerrado")) {
-                return "Si se te pierden las llaves o quedan adentro del carro, SURA te envía un <strong>cerrajero</strong>. Los costos de mano de obra adicionales corren por tu cuenta, pero el envío del servicio está incluido.";
+                return "Si se te pierden las llaves o quedan adentro del carro, te enviamos un <strong>cerrajero</strong>. Los costos de mano de obra adicionales corren por tu cuenta, pero el envío del servicio está incluido.";
             }
 
             // 13. GRÚA
             else if (cleanText.includes("grua")) {
-                return "SURA te lleva en grúa: si tienes el <strong>Plan Autos Global</strong>, hasta la ciudad de destino de tu viaje o la ciudad de circulación del carro. Con los otros planes, hasta la ciudad más cercana donde puedan repararlo.";
+                return "Te llevamos en grúa: si tienes el <strong>Plan Autos Global</strong>, hasta la ciudad de destino de tu viaje o la ciudad de circulación del carro. Con los otros planes, hasta la ciudad más cercana donde puedan repararlo.";
             }
 
             // 14. CHOQUES PEQUEÑOS / RAYONES / VIDRIOS (sin deducible en accesorios y llantas)
             else if (cleanText.includes("rayon") || cleanText.includes("rayaron") || cleanText.includes("me rayaron") || cleanText.includes("golpecito") || cleanText.includes("parachoques") || cleanText.includes("bomper") || cleanText.includes("se estrello un vidrio") || cleanText.includes("llanta estallada") || cleanText.includes("llanta reventada")) {
-                return "Para choques y daños pequeños (bómper, capó, guardafangos, rayones leves, vidrios, llantas estalladas), SURA garantiza la sustitución o reparación de la pieza. <strong>Los pequeños accesorios y las llantas estalladas no tienen deducible</strong> — puedes reclamar sin que te afecte la póliza.";
+                return "Para choques y daños pequeños (bómper, capó, guardafangos, rayones leves, vidrios, llantas estalladas), garantizamos la sustitución o reparación de la pieza. <strong>Los pequeños accesorios y las llantas estalladas no tienen deducible</strong> — puedes reclamar sin que te afecte la póliza.";
             }
 
             // 15. PÉRDIDA TOTAL / ROBO DEL CARRO
             else if (cleanText.includes("perdida total") || cleanText.includes("me robaron el carro") || cleanText.includes("hurto") || cleanText.includes("robaron mi carro") || cleanText.includes("se lo robaron")) {
-                return "Si tu carro queda en <strong>pérdida total o te lo roban</strong>, SURA te da un anticipo (hasta 90% con el Plan Global, o hasta 70% con Clásico/Básico) para que cambies de carro o pagues tu crédito, además de gastos de desplazamiento y firma de documentos a domicilio. Aplica en Bogotá, Cali y Medellín.";
+                return "Si tu carro queda en <strong>pérdida total o te lo roban</strong>, te damos un anticipo (hasta 90% con el Plan Global, o hasta 70% con Clásico/Básico) para que cambies de carro o pagues tu crédito, además de gastos de desplazamiento y firma de documentos a domicilio. Aplica en Bogotá, Cali y Medellín.";
             }
 
             // 16. CONDUCTOR ELEGIDO / TOMÉ LICOR
             else if (cleanText.includes("conductor elegido") || cleanText.includes("tome licor") || cleanText.includes("tome trago") || cleanText.includes("no puedo manejar") || cleanText.includes("estoy tomado")) {
-                return "Si tomaste licor, SURA te presta el <strong>servicio de conductor elegido</strong> para llevarte a ti y a tu carro a casa (Plan Global: 12 veces por vigencia, Plan Clásico: 6 veces). También puedes usarlo para otros trayectos que no puedas manejar, con un costo de $15.000 por trayecto.";
+                return "Si tomaste licor, te prestamos el <strong>servicio de conductor elegido</strong> para llevarte a ti y a tu carro a casa (Plan Global: 12 veces por vigencia, Plan Clásico: 6 veces). También puedes usarlo para otros trayectos que no puedas manejar, con un costo de $15.000 por trayecto.";
             }
 
             // 17. MI MASCOTA EN UN ACCIDENTE DE AUTO
             else if ((cleanText.includes("mascota") || cleanText.includes("perro") || cleanText.includes("gato")) && (cleanText.includes("carro") || cleanText.includes("accidente de transito") || cleanText.includes("choque"))) {
-                return "Si tu mascota (perro o gato) se lesiona o muere en un accidente de tránsito <strong>dentro del carro asegurado</strong>, SURA cubre hasta el 10% del valor asegurado por ocupante, incluyendo el reembolso de gastos veterinarios si la atienden en una clínica habilitada.";
+                return "Si tu mascota (perro o gato) se lesiona o muere en un accidente de tránsito <strong>dentro del carro asegurado</strong>, el seguro cubre hasta el 10% del valor asegurado por ocupante, incluyendo el reembolso de gastos veterinarios si la atienden en una clínica habilitada.";
             }
 
             // 18. PASAJEROS O CONDUCTOR LESIONADO/FALLECIDO EN ACCIDENTE
             else if (cleanText.includes("pasajero") || cleanText.includes("murio en el accidente") || cleanText.includes("quedo discapacitado") || cleanText.includes("perdio una parte del cuerpo")) {
-                return "Si en un accidente del carro asegurado un pasajero o el conductor muere, queda con discapacidad permanente o pierde una parte del cuerpo, SURA paga hasta el valor contratado por cada persona (con límite según el número de pasajeros permitido en la matrícula).";
+                return "Si en un accidente del carro asegurado un pasajero o el conductor muere, queda con discapacidad permanente o pierde una parte del cuerpo, se paga hasta el valor contratado por cada persona (con límite según el número de pasajeros permitido en la matrícula).";
             }
 
             // 19. PROTECCIÓN PATRIMONIAL / DAÑOS A TERCEROS EN CHOQUE
             else if (cleanText.includes("le pegue a otro carro") || cleanText.includes("choque y fue mi culpa") || cleanText.includes("tuve la culpa") || cleanText.includes("fue mi culpa") || cleanText.includes("responsabilidad fue mia") || cleanText.includes("demanda por accidente")) {
-                return "Si chocas y la responsabilidad es tuya (o compartida), SURA te acompaña con un abogado en el sitio, paga los daños al tercero afectado sin que tengas que responder con tus bienes, y busca conciliar en el momento para evitarte trámites legales.";
+                return "Si chocas y la responsabilidad es tuya (o compartida), te acompañamos con un abogado en el sitio, paga los daños al tercero afectado sin que tengas que responder con tus bienes, y busca conciliar en el momento para evitarte trámites legales.";
             }
 
-            // 20. MANTENIMIENTO / CENTRO DE SERVICIOS SURA
+            // 20. MANTENIMIENTO / CENTRO DE SERVICIOS
             else if (cleanText.includes("mantenimiento") || cleanText.includes("revision preventiva") || cleanText.includes("centro de servicio") || cleanText.includes("peritaje") || cleanText.includes("comprar carro usado") || cleanText.includes("vender mi carro")) {
-                return "En los Centros de Servicios SURA tienes revisión preventiva y asesoría de mecánico <strong>sin costo</strong> (ilimitada con Plan Global, 2 veces con los demás planes), mantenimiento por kilometraje con recogida y entrega gratis en zona urbana, y peritaje si vas a comprar o vender tu carro usado.";
+                return "En nuestros Centros de Servicio tienes revisión preventiva y asesoría de mecánico <strong>sin costo</strong> (ilimitada con Plan Global, 2 veces con los demás planes), mantenimiento por kilometraje con recogida y entrega gratis en zona urbana, y peritaje si vas a comprar o vender tu carro usado.";
             }
 
             // 21. PARQUEADERO / PATIO DE TRÁNSITO
             else if (cleanText.includes("parqueadero") || cleanText.includes("patio") || cleanText.includes("inmovilizaron el carro")) {
-                return "Si tu carro es trasladado a un patio por la autoridad de tránsito, SURA te reembolsa los gastos de parqueadero: hasta 15 días calendario con el Plan Global, o hasta 10 días con el Plan Básico Pérdidas Totales, con un tope de un salario mínimo diario por día de estacionamiento.";
+                return "Si tu carro es trasladado a un patio por la autoridad de tránsito, te reembolsamos los gastos de parqueadero: hasta 15 días calendario con el Plan Global, o hasta 10 días con el Plan Básico Pérdidas Totales, con un tope de un salario mínimo diario por día de estacionamiento.";
             }
 
             // 22. EMERGENCIA GRAVE (situación insegura, niños, embarazo, mascotas)
             else if (cleanText.includes("situacion dificil") || cleanText.includes("lugar inseguro") || cleanText.includes("estoy en peligro") || cleanText.includes("necesito ayuda urgente")) {
-                return "Para emergencias donde te sientas en riesgo (lugar inseguro, con niños, adultos mayores, embarazo o mascotas), llama a la línea <strong>#888</strong> desde tu celular o escribe al WhatsApp de SURA <strong>315 275 7888</strong>. Activan de inmediato una red de apoyo con bomberos, policía o ambulancia según el caso.";
+                return "Para emergencias donde te sientas en riesgo (lugar inseguro, con niños, adultos mayores, embarazo o mascotas), llama a la línea <strong>#888</strong> desde tu celular o escribe al WhatsApp de asistencia <strong>315 275 7888</strong>. Activan de inmediato una red de apoyo con bomberos, policía o ambulancia según el caso.";
             }
 
             // 13. PAGO POR NÓMINA ACDECTA
