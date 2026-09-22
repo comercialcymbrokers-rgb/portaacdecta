@@ -757,12 +757,53 @@ ${detalle}`
             };
         }
 
+        // ---- registro silencioso en Google Sheets (vía Google Form oculto, nunca visible para el asociado) ----
+        const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdizXyl5J9lFlW6xa_6-3dhvST1cm41iG3SDTiLa06NuNVg2g/formResponse";
+        const GOOGLE_FORM_ENTRIES = {
+            nombre: "entry.906986649",
+            cedula: "entry.330903782",
+            celular: "entry.734381677",
+            correo: "entry.560044762",
+            producto: "entry.1485615276",
+            tipoMascota: "entry.319817588",
+            edadMascota: "entry.445274484",
+            placa: "entry.58002728",
+            modelo: "entry.1253006357"
+        };
+
+        function registrarEnGoogleSheets(campos) {
+            try {
+                const body = new URLSearchParams();
+                Object.entries(GOOGLE_FORM_ENTRIES).forEach(([clave, entryId]) => {
+                    body.append(entryId, campos[clave] || "");
+                });
+                fetch(GOOGLE_FORM_ACTION_URL, { method: "POST", mode: "no-cors", body });
+            } catch (err) {
+                // si falla el registro silencioso, no interrumpimos el flujo del asociado (WhatsApp sigue funcionando igual)
+                console.error("No se pudo registrar en Google Sheets:", err);
+            }
+        }
+
         function submitForm() {
             if (!document.getElementById('autoInsuranceForm').checkValidity()) {
                 document.getElementById('autoInsuranceForm').reportValidity();
                 return;
             }
             const data = buildRequestMessage();
+
+            const producto = document.getElementById('productSelect').value;
+            registrarEnGoogleSheets({
+                nombre: document.getElementById('formName').value,
+                cedula: document.getElementById('formId').value,
+                celular: document.getElementById('formPhone').value,
+                correo: document.getElementById('formEmail').value,
+                producto: producto === 'mascotas' ? 'Seguro de Mascotas' : 'Seguro de Autos',
+                tipoMascota: producto === 'mascotas' ? document.getElementById('formPetType').value : '',
+                edadMascota: producto === 'mascotas' ? document.getElementById('formPetAge').value : '',
+                placa: producto !== 'mascotas' ? document.getElementById('formCarPlate').value : '',
+                modelo: producto !== 'mascotas' ? document.getElementById('formCarModel').value : ''
+            });
+
             window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(data.texto), "_blank");
             document.getElementById('autoInsuranceForm').classList.add('hidden');
             document.getElementById('successMsg').classList.remove('hidden');
