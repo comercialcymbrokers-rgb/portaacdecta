@@ -992,7 +992,7 @@ ${detalle}`
             }
 
             // 8. SI EL DUEÑO SE ENFERMA O VIAJA (Guardería)
-            else if (cleanText.includes("guarderia") || cleanText.includes("hotel") || cleanText.includes("viaje") || cleanText.includes("quien me lo cuida") || cleanText.includes("hospitalizado el dueno") || cleanText.includes("me enferme")) {
+            else if (cleanText.includes("guarderia") || cleanText.includes("quien me lo cuida") || cleanText.includes("hospitalizado el dueno") || cleanText.includes("si me hospitalizan quien cuida")) {
                 return "<strong>¡Tu mascota no se queda sola!</strong> 🏠<br><br>Si el dueño debe ser hospitalizado por enfermedad o accidente, el seguro incluye un auxilio de guardería por hasta 5 días para su cuidado.";
             }
 
@@ -1004,6 +1004,26 @@ ${detalle}`
             // 10. EDADES Y LÍMITES
             else if (cleanText.includes("edad") || cleanText.includes("anos") || cleanText.includes("meses") || cleanText.includes("viejo") || cleanText.includes("cachorro") || cleanText.includes("hasta que")) {
                 return "Puedes afiliarlo si tiene entre <strong>3 meses y 9 años de edad</strong>. Lo mejor es que una vez adentro, el seguro se renueva de por vida sin límite de edad.";
+            }
+
+            // 21b. CARRO DE REEMPLAZO
+            else if (cleanText.includes("carro de reemplazo") || cleanText.includes("carro sustituto") || cleanText.includes("vehiculo de reemplazo") || cleanText.includes("que hago mientras reparan mi carro") || cleanText.includes("me prestan un carro")) {
+                return "Mientras tu carro está en reparación, si cuentas con la cobertura de alternativas de movilidad te entregamos un <strong>vehículo de reemplazo</strong> (motor a gasolina, caja mecánica o automática según tu carro), por el número de días contratado. Debes asumir un copago exigido por el proveedor mientras lo uses.";
+            }
+
+            // 21c. VIAJE Y TE VARAS / NO PUEDEN REPARAR EL MISMO DÍA (hotel o desplazamiento)
+            else if (cleanText.includes("estoy de viaje") || cleanText.includes("me vare de viaje") || cleanText.includes("no lo pueden reparar hoy") || cleanText.includes("no lo reparan el mismo dia") || cleanText.includes("hotel por varada")) {
+                return "Si estás de viaje y te varas o accidentas y el carro no se puede reparar el mismo día, te acompañamos con una de estas opciones: <strong>hotel</strong> para ti y los pasajeros hasta por 3 noches (según tu póliza), o <strong>desplazamiento</strong> hasta tu domicilio o destino. Si vas con tu mascota, coordinamos hospedaje y transporte para que puedan estar juntos (debe ir con bozal o guacal).";
+            }
+
+            // 21d. COBERTURA AL 100% / FRANQUICIA (cuánto pago yo)
+            else if (cleanText.includes("franquicia") || cleanText.includes("cuanto tengo que pagar yo") || cleanText.includes("deducible") || cleanText.includes("cuanto me toca pagar del arreglo")) {
+                return "Funciona así: si el arreglo cuesta <strong>menos</strong> del valor contratado (tu franquicia), tú asumes ese costo. Si cuesta <strong>más</strong>, el seguro paga el arreglo completo.";
+            }
+
+            // 21e. DESPLAZAMIENTO POR ENFERMEDAD O NO PUEDES MANEJAR POR SALUD
+            else if (cleanText.includes("me enferme y no puedo manejar") || cleanText.includes("condicion de salud no me deja manejar") || cleanText.includes("me siento mal para manejar") || cleanText.includes("no puedo conducir por salud")) {
+                return "Si tuviste un accidente o una condición de salud que no te permite manejar, te prestamos el <strong>servicio de desplazamiento</strong> hasta el centro hospitalario más cercano o hasta tu domicilio, en el medio que determine el profesional de la salud.";
             }
 
             // 11. VARADA EN VÍA: llanta pinchada, batería, sin gasolina (taller móvil)
